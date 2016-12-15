@@ -1,10 +1,10 @@
 var path=require('path')
 
 module.exports={
-  entry:'./src/index.js',
+  entry:'./src/vue-paper.js',
   output:{
     path:'./dist',
-    filename:'index.js'
+    filename:'vue-paper.js'
   },
   resolve:{
     extensions:['','.js','.vue']//解析

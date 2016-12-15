@@ -56,13 +56,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var vm = new _Vue2.default({
-	  el: '.app',
-	  data: {},
-	  components: {
-	    test: _test2.default
-	  }
-	});
+	__webpack_require__(10);
 
 /***/ },
 /* 1 */
@@ -10522,7 +10516,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-5fcd0fce/test.vue"
+	  var id = "_v-5f431af0/test.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -10873,6 +10867,13 @@
 /***/ function(module, exports) {
 
 	module.exports = "\n<div class=\"\">    \n  {{ test }}\n</div>\n";
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["VuePaper"] = __webpack_require__(3);
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }
 /******/ ]);
