@@ -1,16 +1,15 @@
 <template lang="html">
-  <div class="">
-    {{ test }}
-  </div>
+  <template v-for="item in items">
+    {{ item.type }}
+  </template>
 </template>
 
 <script>
+import computed from './module/computed'
+
 export default {
-  data (){
-    return {
-      test:'tingxu'
-    }
-  }
+  props:['msg'],
+  computed
 }
 </script>
 

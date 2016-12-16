@@ -1,16 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>vue</title>
-    <link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css">
+  <meta charset="UTF-8">
+  <title>vue</title>
+  <link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css">
+  <style>
+  body{
+    background: url('img/login_bg2.jpg');
+    font-size: 19px;
+  }
+  .form-control{
+    font-size: 19px;
+  }
+  .wrap{
+    background: rgba(0,0,0,.4);
+    border-radius: 8px;
+    padding:30px;
+    margin-bottom: 40px;
+    color:#fff;
+  }
+  .main-wrap{
+    position: absolute;
+    margin-top: 30px;
+    /*height: 550px;*/
+    height:90%;
+    overflow: auto;
+  }
+  .answer-wrap{
+    /*height:70px;*/
+  }
+
+  .red{
+    color:red;
+  }
+  .black{
+    color:#000;
+  }
+  </style>
 </head>
 <body>
-  <div class="app">
-    <vue-paper></vue-paper>
-    <!-- <test></test> -->
+  <div class="g-clearfix">
+    <div class="wrap main-wrap col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-xs-10 col-xs-offset-1">
+      <div class="app">
+        <vue-paper :msg="questionData"></vue-paper>
+      </div>
+    </div>
   </div>
-  <!-- <script src="../dist/vue-paper.js"></script> -->
   <script src="dist/index.js"></script>
 </body>
 </html>

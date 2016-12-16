@@ -7,6 +7,12 @@ export default [
   {
     type:'radio',
     mode:'hard',
+    title:'111',
+    answerIndex:0
+  },
+  {
+    type:'radio',
+    mode:'hard',
     title:'您是否已通过英语四级？',
     answerIndex:0
   }

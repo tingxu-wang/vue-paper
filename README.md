@@ -45,7 +45,9 @@ ver 1.0.0
 ***
 
 ## 使用（本示例采用了ES2015的语法，请实际使用的时候使用webpack+babel编译）
+
 ** 在example文件夹下有实际的可运行示例以供参考 **
+
 - 数据对象模块：
 
 ```javascript
@@ -72,13 +74,13 @@ export default [
 ```
 
 在你的脚本文件之中引用VuePaper模块,将其加入到vue实例中的components中,
-如果你想在组件之中使用VuePaper,可将其放入到组件中的components之中
+如果你想在组件之中使用VuePaper.vue,可将其放入到组件中的components之中
 ```javascript
 /*index.js*/
 //引入问卷题目数据数组对象
 import questionData from './data/question'
 //引入VuePaper模块
-import VuePaper from 'vue-paper/dist/VuePaper'
+import VuePaper from 'vue-paper/vue-paper'
 
 //vue实例
 const vm=new Vue({
@@ -105,7 +107,8 @@ html文件
 <body>
   <div class="app">
     <!-- 在view之中利用标签加载VuePaper组件，并利用msg变量传入题目信息数组 -->
-    <VuePaper msg="questionData"></VuePaper>
+    <!-- 这里要注意，自定义组件标签是不支持大写的 -->
+    <vue-paper msg="questionData"></vue-paper>
   </div>
   <script src="dist/index.js"></script>
 </body>

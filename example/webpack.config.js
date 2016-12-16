@@ -15,13 +15,13 @@ module.exports={
   },
   module: {
     loaders: [{
+      test: /\.vue$/,
+      loader: 'vue'
+    },{
       test: /\.js$/,
       //exclude:path.join(__dirname,'node_modules'),
       loader: 'babel',
-      include:path.join(__dirname,'src')
-    },{
-      test: /\.vue$/,
-      loader: 'vue'
+      include:[path.join(__dirname,'src'),path.join(__dirname,'..','src')]
     }]
   },
   babel: {
