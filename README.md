@@ -1,5 +1,5 @@
 # vue-paper
-ver 1.0.0
+ver 1.2.0_Alpha
 ***
 
 ## 简介
@@ -42,84 +42,11 @@ ver 1.0.0
 展性而且只是机械的重复相同的代码逻辑，任何重复的部分理论上都应该用引用+遍历的方式解决，
 因此促使了我针对问卷业务轮子编写的进度，也就是这个库
 
-***
-
-## 使用（本示例采用了ES2015的语法，请实际使用的时候使用webpack+babel编译）
-
-** 在example文件夹下有实际的可运行示例以供参考 **
-
-- 数据对象模块：
-
-```javascript
-/*question.js*/
-/*
-问卷题目数据数组对象，这里为了方便展示说明而使用的是静态文件
-正式使用的时候你应该采取ajax的方式获取数据对象
-获取题目对象之后，加到vue实例的data之中即可
-*/
-export default [
-  {
-    type:'radio',
-    title:'您的性别是什么？',
-    option:['男','女']
-  },
-  {
-    type:'radio',
-    mode:'hard',
-    title:'您是否已通过英语四级？',
-    answerIndex:0
-  }
-  //...
-]
-```
-
-在你的脚本文件之中引用VuePaper模块,将其加入到vue实例中的components中,
-如果你想在组件之中使用VuePaper.vue,可将其放入到组件中的components之中
-```javascript
-/*index.js*/
-//引入问卷题目数据数组对象
-import questionData from './data/question'
-//引入VuePaper模块
-import VuePaper from 'vue-paper/vue-paper'
-
-//vue实例
-const vm=new Vue({
-  //...
-  el:'.app',
-  data:{
-    questionData
-  },
-  components:{
-    VuePaper
-  }
-  //...
-})
-
-```
-html文件
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>vue</title>
-</head>
-<body>
-  <div class="app">
-    <!-- 在view之中利用标签加载VuePaper组件，并利用msg变量传入题目信息数组 -->
-    <!-- 这里要注意，自定义组件标签是不支持大写的 -->
-    <vue-paper msg="questionData"></vue-paper>
-  </div>
-  <script src="dist/index.js"></script>
-</body>
-</html>
-```
-
-
+---
 
 ## api接口
 
-* 题目数据 `data` `type:Array`
+- 题目数据 `data` `type:Array`
 
   本框架接受一个由对象组成的数组作为数据源
 
@@ -148,7 +75,120 @@ const questionData=[{
 | answerIndex | Number | 数字 | 在使用'hard'模式的时候正确答案在选项中的位置索引，若未填写，默认索引为数组中的第0个 | 否 |
 | option | Array | 由字符串组成的数组 | 题目选项的文本，若未声明该字面量，默认使用['是','否'] | 否 |
 
-***
+
+- 默认配置覆盖 `options` `type:Object`
+
+如前所述，在一些参数属性在题目对象之中没有显式声明的时候vue-paper将采用默认值进行填充，但如果说你想定制默认配置的话options就派上了用场
+
+框架的默认参数配置如下：
+
+| 未显式声明的属性 | 默认参数配置 |
+| :-- | :-- |
+| answerIndex | 0 |
+| mode | 'default' |
+| option | ['是','否'] |
+
+你可以在vue-paper DOM标签内加入`options` props参数覆盖上述的默认配置，
+vue-paper会优先采用你传入的默认选项渲染view层
+```html
+  <!-- options参数传入到vue-paper标签之内以覆盖框架的默认配置 -->
+  <vue-paper :msg="questionData" :options="options"></vue-paper>
+
+```
+
+---
+
+## 使用说明（本示例采用了ES2015的语法，请实际使用的时候使用webpack+babel编译）
+
+** 在example文件夹下有实际的可运行示例以供参考 **
+
+- 数据对象模块：
+
+```javascript
+/*question.js*/
+/*
+问卷题目数据数组对象，这里为了方便展示说明而使用的是静态文件
+正式使用的时候你应该采取ajax的方式获取数据对象
+获取题目对象之后，加到vue实例的data之中即可
+*/
+export default [
+  {
+    type:'radio',
+    title:'您的性别是什么？',
+    option:['男','女']
+  },
+  {
+    type:'radio',
+    mode:'hard',
+    title:'您是否已通过英语四级？',
+    answerIndex:0
+  }
+  //...
+]
+```
+
+- 默认值设置模块
+
+```javascript
+/* options.js */
+/*
+  你可以用一个对象来显示的覆盖vue-paper的默认参数
+*/
+
+export default {
+  option:['yes','no']//这样设置后，框架的默认option值会被覆盖
+}
+
+```
+
+在你的脚本文件之中引用VuePaper模块,将其加入到vue实例中的components中,
+如果你想在组件之中使用VuePaper.vue,可将其放入到组件中的components之中
+
+```javascript
+/*index.js*/
+//引入问卷题目数据数组对象
+import questionData from './data/question'
+//引入你要覆盖的配置对象
+import options from './data/options'
+//引入VuePaper模块
+import VuePaper from 'vue-paper/vue-paper'
+
+//vue实例
+const vm=new Vue({
+  //...
+  el:'.app',
+  data:{
+    questionData,
+    options
+  },
+  components:{
+    VuePaper
+  }
+  //...
+})
+
+```
+html文件
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue</title>
+</head>
+<body>
+  <div class="app">
+    <!-- 在view之中利用标签加载VuePaper组件，并利用msg变量传入题目信息数组 -->
+    <!-- 如果想修改vue-paper的默认参数可以用:options传入一个对象用于覆盖默认配置 -->
+    <!-- 这里要注意，自定义组件标签是不支持大写的 -->
+    <vue-paper :msg="questionData" :options="options"></vue-paper>
+  </div>
+  <script src="dist/index.js"></script>
+</body>
+</html>
+```
+---
+
 ## 题型种类详细说明
 
 ### 单选题（radio）`type:radio`

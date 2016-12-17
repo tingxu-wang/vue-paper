@@ -7,7 +7,7 @@ export default [
   {
     type:'radio',
     mode:'hard',
-    title:'111',
+    title:'11',
     answerIndex:0
   },
   {

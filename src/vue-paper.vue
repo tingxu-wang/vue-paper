@@ -8,7 +8,7 @@
 import computed from './module/computed'
 
 export default {
-  props:['msg'],
+  props:['msg','options'],
   computed
 }
 </script>
