@@ -17,7 +17,7 @@ function DataCompile(questions,options){
   this.questions=questions//题目数组对象
   this.options=options//默认参数设置
 
-  this.items={}//经过模块加工过的数据对象，最终传递给调用者
+  this.items=[]//经过模块加工过的数据对象，最终传递给调用者
 
   return this.init()
 }

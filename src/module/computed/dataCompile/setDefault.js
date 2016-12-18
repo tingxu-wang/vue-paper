@@ -5,7 +5,8 @@
 
 export default function setDefault(){
   let questions=this.questions,
-      options={}//用户设置项覆盖默认配置后生成的最终默认设置
+      items=this.items,//最终赋值给items让vue-paper渲染
+      finalOptions={}//用户设置项覆盖默认配置后生成的最终默认设置
 
   let main=Object.setPrototypeOf({
     defaultOptions:{//框架默认的设置项
@@ -50,15 +51,22 @@ export default function setDefault(){
           break;
         }
       })
-
       return result
     },
-    init(){
-      console.log(this.checkUserOptions())
+    assginOptions (){
+      Object.assign(finalOptions,this.defaultOptions,this.userOptions)
+    },
+    addDefaults (question){
+      let options={...finalOptions}
+      items.push(Object.assign(options,question))
     }
   })
 
-  main.init()
+  if(main.checkUserOptions()){//用户传递的默认项没有错误则混合默认项和用户配置项
+    main.assginOptions()
 
-  //this.items=this.questions //最终赋值给items让vue-paper渲染
+    questions.forEach((question)=>{//给题目对象填充默认值
+      main.addDefaults(question)
+    })
+  }
 }
