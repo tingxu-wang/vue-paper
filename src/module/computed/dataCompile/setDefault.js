@@ -68,7 +68,12 @@ export default function setDefault(){
     },
     addDefaults (question){
       let options={...finalOptions}
-      items.push(Object.assign(options,question))
+      let questionObj=Object.assign(options,question)
+
+      if(questionObj.mode!=='hard'){//只有在hard模式下才加入answerIndex属性
+        delete questionObj.answerIndex
+      }
+      items.push(questionObj)
     }
   })
 

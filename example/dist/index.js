@@ -107,8 +107,7 @@
 	}, {
 	  type: 'radio',
 	  mode: 'hard',
-	  title: '11',
-	  answerIndex: 0
+	  title: '11'
 	}, {
 	  type: 'radio',
 	  mode: 'hard',
@@ -1916,7 +1915,12 @@
 	    },
 	    addDefaults: function addDefaults(question) {
 	      var options = (0, _extends3.default)({}, finalOptions);
-	      items.push((0, _assign2.default)(options, question));
+	      var questionObj = (0, _assign2.default)(options, question);
+
+	      if (questionObj.mode !== 'hard') {
+	        delete questionObj.answerIndex;
+	      }
+	      items.push(questionObj);
 	    }
 	  });
 

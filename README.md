@@ -1,5 +1,5 @@
 # vue-paper
-ver 1.3.1_Alpha
+ver 1.3.2_Alpha
 ***
 
 ## 简介
