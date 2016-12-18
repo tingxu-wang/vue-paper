@@ -1551,7 +1551,7 @@
 
 	var _checkValid2 = _interopRequireDefault(_checkValid);
 
-	var _setDefault = __webpack_require__(79);
+	var _setDefault = __webpack_require__(85);
 
 	var _setDefault2 = _interopRequireDefault(_setDefault);
 
@@ -1587,7 +1587,11 @@
 	  value: true
 	});
 
-	var _setPrototypeOf = __webpack_require__(74);
+	var _getOwnPropertyNames = __webpack_require__(74);
+
+	var _getOwnPropertyNames2 = _interopRequireDefault(_getOwnPropertyNames);
+
+	var _setPrototypeOf = __webpack_require__(80);
 
 	var _setPrototypeOf2 = _interopRequireDefault(_setPrototypeOf);
 
@@ -1599,50 +1603,70 @@
 	  var questions = this.questions;
 
 	  var main = (0, _setPrototypeOf2.default)({
-	    successInfo: { status: 1 },
 	    result: true }, {
-	    errorInfo: function errorInfo(msg) {
-	      return { status: 0, msg: msg };
-	    },
-	    throwError: function throwError(str, index) {
-	      console.error(str + '！错误的题目索引为：' + index);
-	      this.result = false;
-	    },
-	    checkTitle: function checkTitle(question) {
-	      var title = question.title;
+	    checkQuestion: function checkQuestion(question, questionIndex) {
+	      var propertyNames = (0, _getOwnPropertyNames2.default)(question);
 
-	      if (typeof title !== 'string') {
-	        return this.errorInfo('title属性的值必须为字符串');
-	      } else {
-	        if (title.length === 0) {
-	          return this.errorInfo('title属性不能为空字符串');
+	      propertyNames.forEach(function (propertyName) {
+	        var propertyValue = question[propertyName];
+
+	        function showError() {
+	          var addition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
+	          console.error('题目对象的' + propertyName + '属性配置错误！' + addition + ' 错误的题目索引为：' + questionIndex);
+	          this.result = false;
 	        }
-	        return this.successInfo;
-	      }
-	    },
-	    checkType: function checkType(question) {
-	      var type = question.type;
-
-	      if (type !== 'radio' && type !== 'select') {
-	        return this.errorInfo("type值只能为'radio'或'select'");
-	      }
-	      return this.successInfo;
+	        switch (propertyName) {
+	          case 'type':
+	            if (propertyValue !== 'radio' && propertyValue !== 'select') {
+	              showError("type值只能为'radio'或'select'");
+	            }
+	            break;
+	          case 'title':
+	            if (typeof propertyValue !== 'string') {
+	              showError('属性的值必须为字符串');
+	            } else {
+	              if (propertyValue.length === 0) {
+	                showError('字符串长度不能为0');
+	              }
+	            }
+	            break;
+	          case 'mode':
+	            if (propertyValue !== 'default' && propertyValue !== 'hard' && propertyValue !== 'branch') {
+	              showError("目前只支持'default' 'hard' 'branch'三种模式");
+	            }
+	            break;
+	          case 'option':
+	            if (!(propertyValue instanceof Array)) {
+	              showError('必须为一个数组');
+	            }
+	            break;
+	          case 'endMessage':
+	            if (typeof propertyValue !== 'string') {
+	              showError('该属性必须为字符串');
+	            } else {
+	              if (propertyValue.length === 0) {
+	                showError('字符串长度不能为0');
+	              }
+	            }
+	            break;
+	          case 'answerIndex':
+	            if (typeof propertyValue !== 'number') {
+	              showError('必须为一个数字');
+	            }
+	            break;
+	          case '__ob__':
+	            break;
+	          default:
+	            showError('vue-paper不支持你提供的键名');
+	            break;
+	        }
+	      });
 	    }
 	  });
 
 	  questions.forEach(function (question, index) {
-	    var saveResult = [];
-
-	    var type = main.checkType(question),
-	        title = main.checkTitle(question);
-
-	    saveResult.push(type, title);
-
-	    saveResult.forEach(function (result) {
-	      if (!result.status) {
-	        main.throwError(result.msg, index);
-	      }
-	    });
+	    main.checkQuestion(question, index);
 	  });
 
 	  return main.result;
@@ -1659,18 +1683,95 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(76);
-	module.exports = __webpack_require__(17).Object.setPrototypeOf;
+	var $Object = __webpack_require__(17).Object;
+	module.exports = function getOwnPropertyNames(it){
+	  return $Object.getOwnPropertyNames(it);
+	};
 
 /***/ },
 /* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// 19.1.3.19 Object.setPrototypeOf(O, proto)
-	var $export = __webpack_require__(15);
-	$export($export.S, 'Object', {setPrototypeOf: __webpack_require__(77).set});
+	// 19.1.2.7 Object.getOwnPropertyNames(O)
+	__webpack_require__(77)('getOwnPropertyNames', function(){
+	  return __webpack_require__(78).f;
+	});
 
 /***/ },
 /* 77 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// most Object methods by ES6 should accept primitives
+	var $export = __webpack_require__(15)
+	  , core    = __webpack_require__(17)
+	  , fails   = __webpack_require__(26);
+	module.exports = function(KEY, exec){
+	  var fn  = (core.Object || {})[KEY] || Object[KEY]
+	    , exp = {};
+	  exp[KEY] = exec(fn);
+	  $export($export.S + $export.F * fails(function(){ fn(1); }), 'Object', exp);
+	};
+
+/***/ },
+/* 78 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
+	var toIObject = __webpack_require__(34)
+	  , gOPN      = __webpack_require__(79).f
+	  , toString  = {}.toString;
+
+	var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames
+	  ? Object.getOwnPropertyNames(window) : [];
+
+	var getWindowNames = function(it){
+	  try {
+	    return gOPN(it);
+	  } catch(e){
+	    return windowNames.slice();
+	  }
+	};
+
+	module.exports.f = function getOwnPropertyNames(it){
+	  return windowNames && toString.call(it) == '[object Window]' ? getWindowNames(it) : gOPN(toIObject(it));
+	};
+
+
+/***/ },
+/* 79 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
+	var $keys      = __webpack_require__(32)
+	  , hiddenKeys = __webpack_require__(45).concat('length', 'prototype');
+
+	exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O){
+	  return $keys(O, hiddenKeys);
+	};
+
+/***/ },
+/* 80 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(81), __esModule: true };
+
+/***/ },
+/* 81 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(82);
+	module.exports = __webpack_require__(17).Object.setPrototypeOf;
+
+/***/ },
+/* 82 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.3.19 Object.setPrototypeOf(O, proto)
+	var $export = __webpack_require__(15);
+	$export($export.S, 'Object', {setPrototypeOf: __webpack_require__(83).set});
+
+/***/ },
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Works with __proto__ only. Old v8 can't work with null proto objects.
@@ -1685,7 +1786,7 @@
 	  set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
 	    function(test, buggy, set){
 	      try {
-	        set = __webpack_require__(18)(Function.call, __webpack_require__(78).f(Object.prototype, '__proto__').set, 2);
+	        set = __webpack_require__(18)(Function.call, __webpack_require__(84).f(Object.prototype, '__proto__').set, 2);
 	        set(test, []);
 	        buggy = !(test instanceof Array);
 	      } catch(e){ buggy = true; }
@@ -1700,7 +1801,7 @@
 	};
 
 /***/ },
-/* 78 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var pIE            = __webpack_require__(47)
@@ -1721,7 +1822,7 @@
 	};
 
 /***/ },
-/* 79 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1738,11 +1839,11 @@
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _getOwnPropertyNames = __webpack_require__(80);
+	var _getOwnPropertyNames = __webpack_require__(74);
 
 	var _getOwnPropertyNames2 = _interopRequireDefault(_getOwnPropertyNames);
 
-	var _setPrototypeOf = __webpack_require__(74);
+	var _setPrototypeOf = __webpack_require__(80);
 
 	var _setPrototypeOf2 = _interopRequireDefault(_setPrototypeOf);
 
@@ -1759,7 +1860,8 @@
 	    defaultOptions: {
 	      answerIndex: 0,
 	      mode: 'default',
-	      option: ['是', '否']
+	      option: ['是', '否'],
+	      endMessage: '答题结束！'
 	    },
 	    userOptions: this.options }, {
 	    checkUserOptions: function checkUserOptions() {
@@ -1767,32 +1869,42 @@
 	          propertyNames = (0, _getOwnPropertyNames2.default)(userOptions),
 	          result = true;
 
-	      function showError(propertyName) {
-	        console.error('"' + propertyName + '""' + '属性配置错误！');
-	        result = false;
-	      }
-
 	      propertyNames.forEach(function (propertyName, index) {
 	        var optionValue = userOptions[propertyName];
 
+	        function showError() {
+	          var addition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
+	          console.error('你设置的题目默认配置对象(options)的"' + propertyName + '"' + '属性配置错误！' + addition);
+	          result = false;
+	        }
 	        switch (propertyName) {
 	          case 'answerIndex':
 	            if (typeof optionValue !== 'number') {
-	              showError(propertyName);
+	              showError('必须为一个数字');
 	            }
 	            break;
 	          case 'mode':
 	            if (optionValue !== 'default' && optionValue !== 'hard' && optionValue !== 'branch') {
-	              showError(propertyName);
+	              showError("目前只支持'default' 'hard' 'branch'三种模式");
 	            }
 	            break;
 	          case 'option':
 	            if (!(optionValue instanceof Array)) {
-	              showError(propertyName);
+	              showError('必须为一个数组');
+	            }
+	            break;
+	          case 'endMessage':
+	            if (typeof optionValue !== 'string') {
+	              showError('该属性必须为字符串');
+	            } else {
+	              if (optionValue.length === 0) {
+	                showError('字符串长度不能为0');
+	              }
 	            }
 	            break;
 	          default:
-	            console.error('vue-paper不支持您所传递的options配置属性："' + propertyName + '"');
+	            console.error('vue-paper不支持你所配置的题目默认配置对象（options）配置属性："' + propertyName + '"');
 	            result = false;
 	            break;
 	        }
@@ -1816,83 +1928,6 @@
 	    });
 	  }
 	}
-
-/***/ },
-/* 80 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(81), __esModule: true };
-
-/***/ },
-/* 81 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(82);
-	var $Object = __webpack_require__(17).Object;
-	module.exports = function getOwnPropertyNames(it){
-	  return $Object.getOwnPropertyNames(it);
-	};
-
-/***/ },
-/* 82 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.2.7 Object.getOwnPropertyNames(O)
-	__webpack_require__(83)('getOwnPropertyNames', function(){
-	  return __webpack_require__(84).f;
-	});
-
-/***/ },
-/* 83 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// most Object methods by ES6 should accept primitives
-	var $export = __webpack_require__(15)
-	  , core    = __webpack_require__(17)
-	  , fails   = __webpack_require__(26);
-	module.exports = function(KEY, exec){
-	  var fn  = (core.Object || {})[KEY] || Object[KEY]
-	    , exp = {};
-	  exp[KEY] = exec(fn);
-	  $export($export.S + $export.F * fails(function(){ fn(1); }), 'Object', exp);
-	};
-
-/***/ },
-/* 84 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-	var toIObject = __webpack_require__(34)
-	  , gOPN      = __webpack_require__(85).f
-	  , toString  = {}.toString;
-
-	var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames
-	  ? Object.getOwnPropertyNames(window) : [];
-
-	var getWindowNames = function(it){
-	  try {
-	    return gOPN(it);
-	  } catch(e){
-	    return windowNames.slice();
-	  }
-	};
-
-	module.exports.f = function getOwnPropertyNames(it){
-	  return windowNames && toString.call(it) == '[object Window]' ? getWindowNames(it) : gOPN(toIObject(it));
-	};
-
-
-/***/ },
-/* 85 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
-	var $keys      = __webpack_require__(32)
-	  , hiddenKeys = __webpack_require__(45).concat('length', 'prototype');
-
-	exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O){
-	  return $keys(O, hiddenKeys);
-	};
 
 /***/ },
 /* 86 */

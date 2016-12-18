@@ -1,5 +1,6 @@
 /*
-  补全信息的默认值
+  用户options的校验
+  补全非必填项的默认值
   如果用户有传入options参数优先使用用户给到的属性值
 */
 
@@ -12,7 +13,8 @@ export default function setDefault(){
     defaultOptions:{//框架默认的设置项
       answerIndex:0,
       mode:'default',
-      option:['是','否']
+      option:['是','否'],
+      endMessage:'答题结束！'
     },
     userOptions:this.options//获取用户传来的设置对象
   },{
@@ -21,32 +23,40 @@ export default function setDefault(){
           propertyNames=Object.getOwnPropertyNames(userOptions),//获取用户设置的所有键名
           result=true
 
-      function showError(propertyName){//返回判定结果，如果有问题向浏览器报错
-        console.error('"'+ propertyName +'""'+'属性配置错误！')
-        result=false
-      }
-
       propertyNames.forEach((propertyName,index)=>{
         let optionValue=userOptions[propertyName]//用户设置对象档次遍历取到的值
 
+        function showError(addition=''){//返回判定结果，如果有问题向浏览器报错
+          console.error('你设置的题目默认配置对象(options)的"'+ propertyName +'"'+'属性配置错误！'+addition)
+          result=false
+        }
         switch (propertyName){
           case 'answerIndex':
             if(typeof optionValue!=='number'){
-              showError(propertyName)
+              showError('必须为一个数字')
             }
           break;
           case 'mode':
             if(optionValue!=='default' && optionValue!=='hard' && optionValue!=='branch'){
-              showError(propertyName)
+              showError("目前只支持'default' 'hard' 'branch'三种模式")
             }
           break;
           case 'option':
             if(! (optionValue instanceof Array)){
-              showError(propertyName)
+              showError('必须为一个数组')
+            }
+          break;
+          case 'endMessage':
+            if(typeof optionValue!=='string'){
+              showError('该属性必须为字符串')
+            }else{
+              if(optionValue.length===0){
+                showError('字符串长度不能为0')
+              }
             }
           break;
           default:
-            console.error('vue-paper不支持您所传递的options配置属性："'+propertyName+'"')
+            console.error('vue-paper不支持你所配置的题目默认配置对象（options）配置属性："'+propertyName+'"')
             result=false
           break;
         }

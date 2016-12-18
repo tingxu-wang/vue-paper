@@ -1,40 +1,71 @@
 /*
   校验用户传来的数据中的错误,根据错误类型抛出提示信息到控制台
+
+  模块返回布尔值
 */
 
 export default function checkValid (){
   let questions=this.questions
 
   let main=Object.setPrototypeOf({
-    successInfo:{status:1},
     result:true//模块的最终返回结果，函数体的最后返回
   },{
-    errorInfo (msg){
-      return {status:0,msg}
-    },
-    throwError (str,index){
-      console.error(str+'！错误的题目索引为：'+index)
-      this.result=false
-    },
-    checkTitle (question){
-      const title=question.title
+    checkQuestion (question,questionIndex){//对单个题目对象进行信息校验
+      let propertyNames=Object.getOwnPropertyNames(question)//题目对象的属性键
 
-      if(typeof title!=='string'){
-        return this.errorInfo('title属性的值必须为字符串')
-      }else{
-        if(title.length===0){
-          return this.errorInfo('title属性不能为空字符串')
+      propertyNames.forEach((propertyName)=>{
+        let propertyValue=question[propertyName]
+
+        function showError(addition=''){
+          console.error('题目对象的'+propertyName+'属性配置错误！'+addition+' 错误的题目索引为：'+questionIndex)
+          this.result=false
         }
-        return this.successInfo
-      }
-    },
-    checkType (question){
-      const type=question.type
-
-      if(type!=='radio' && type!=='select'){
-        return this.errorInfo("type值只能为'radio'或'select'")
-      }
-      return this.successInfo
+        switch (propertyName){
+          case 'type':
+            if(propertyValue!=='radio' && propertyValue!=='select'){
+              showError("type值只能为'radio'或'select'")
+            }
+          break;
+          case 'title':
+            if(typeof propertyValue!=='string'){
+              showError('属性的值必须为字符串')
+            }else{
+              if(propertyValue.length===0){
+                showError('字符串长度不能为0')
+              }
+            }
+          break;
+          case 'mode':
+            if(propertyValue!=='default' && propertyValue!=='hard' && propertyValue!=='branch'){
+              showError("目前只支持'default' 'hard' 'branch'三种模式")
+            }
+          break;
+          case 'option':
+            if(! (propertyValue instanceof Array)){
+              showError('必须为一个数组')
+            }
+          break;
+          case 'endMessage':
+            if(typeof propertyValue!=='string'){
+              showError('该属性必须为字符串')
+            }else{
+              if(propertyValue.length===0){
+                showError('字符串长度不能为0')
+              }
+            }
+          break;
+          case 'answerIndex':
+            if(typeof propertyValue!=='number'){
+              showError('必须为一个数字')
+            }
+          break;
+          case '__ob__':
+          break;
+          default:
+            showError('vue-paper不支持你提供的键名')
+          break;
+        }
+      })
     }
   })
 
@@ -43,18 +74,7 @@ export default function checkValid (){
     最后保存到saveResult数组之中遍历抛出错误信息到控制台
   */
   questions.forEach((question,index)=>{
-    let saveResult=[]
-
-    let type=main.checkType(question),
-        title=main.checkTitle(question)
-
-    saveResult.push(type,title)
-
-    saveResult.forEach((result)=>{
-      if( !result.status ){
-        main.throwError(result.msg,index)
-      }
-    })
+    main.checkQuestion(question,index)
   })
 
   return main.result

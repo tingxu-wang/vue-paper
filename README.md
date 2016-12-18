@@ -1,5 +1,5 @@
 # vue-paper
-ver 1.3.0_Alpha
+ver 1.3.1_Alpha
 ***
 
 ## 简介
@@ -72,6 +72,7 @@ const questionData=[{
 | type | String | 'radio','select' | 题目的种类 | 是 |
 | title | String | 任意字符串 | 题目的文本 | 是 |
 | mode | String | 'default','hard','branch' | 控制题目的种类(更多信息请查看详细说明 | 否 |
+| endMessage | String | 任意字符串 | 在 `mode:'hard'` 前提下用户选中错误选项，答题结束后出现的结束文本提示 | 否 |
 | answerIndex | Number | 数字 | 在使用'hard'模式的时候正确答案在选项中的位置索引，若未填写，默认索引为数组中的第0个 | 否 |
 | option | Array | 由字符串组成的数组 | 题目选项的文本，若未声明该字面量，默认使用['是','否'] | 否 |
 
@@ -84,8 +85,9 @@ const questionData=[{
 
 | 未显式声明的属性 | 默认参数配置 |
 | :-- | :-- |
-| answerIndex | 0 |
 | mode | 'default' |
+| endMessage | '答题结束！' |
+| answerIndex | 0 |
 | option | ['是','否'] |
 
 你可以在vue-paper DOM标签内加入`options` props参数覆盖上述的默认配置，
